@@ -1,46 +1,51 @@
 package com.discoveryfx;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Client extends Application{
 
-    private static final int WIDTH = 600;
-    private static final int HEIGHT = 600;
-    private static final int LEFT_SIDE_WIDTH = 200;
-    private static final int RIGHT_SIDE_WIDTH = 200;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 800;
 
     private Parent createRoot() {
         BorderPane root = new BorderPane();
-        GraphPane gridRoot = new GraphPane(WIDTH, HEIGHT);
+        root.setPrefWidth(WIDTH);
+        root.setPrefHeight(HEIGHT);
 
-        VBox vBoxLeft = new VBox();
-        vBoxLeft.setPrefWidth(LEFT_SIDE_WIDTH);
-        VBox vBoxRight = new VBox();
-        vBoxRight.setPrefWidth(RIGHT_SIDE_WIDTH);
-        root.setLeft(vBoxLeft);
-        root.setRight(vBoxRight);
+        VBox vBox = new VBox();
 
-        ScrollPane scrollPane = new ScrollPane(gridRoot);
-        scrollPane.setPannable(false);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        TabPane header = new TabPane();
+        Tab clusterReportTab = new Tab("Cluster Report");
+        clusterReportTab.setClosable(false);
+        Tab intentTab = new Tab("Intents");
+        intentTab.setClosable(false);
 
-        root.setCenter(scrollPane);
+        header.getTabs().addAll(clusterReportTab, intentTab);
 
-        DragableBox dragableBox = new DragableBox(scrollPane, gridRoot, 100, 100, 50, 50);
-        gridRoot.addBox(dragableBox);
+        Pane contentPane = new Pane();
+        Pane internalPane = new Pane();
+        internalPane.setTranslateX(5);
+        internalPane.setTranslateY(5);
+        internalPane.prefWidthProperty().bind(contentPane.widthProperty().subtract(10));
+        internalPane.prefHeightProperty().bind(contentPane.heightProperty().subtract(10));
+        contentPane.getChildren().add(internalPane);
 
-        DragableBox dragableBox1 = new DragableBox(scrollPane, gridRoot, 400, 100, 50, 50);
-        dragableBox1.setFill(Color.AZURE);
-        dragableBox1.setStrokeWidth(2);
-        dragableBox1.setStroke(Color.BLACK);
-        gridRoot.addBox(dragableBox1);
+
+        HBox.setHgrow(contentPane, Priority.ALWAYS);
+        VBox.setVgrow(contentPane, Priority.ALWAYS);
+
+        vBox.getChildren().addAll(header, contentPane);
+        root.setCenter(vBox);
+
+
         return root;
     }
 
