@@ -16,6 +16,21 @@ public class ClusterDatum {
     @JsonProperty("confidence")
     private String confidence;
 
+    public String getConfidence() {
+        return confidence;
+    }
+
+    @JsonIgnore
+    private String source;
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
     @JsonIgnore
     private float sim;
 
@@ -41,6 +56,17 @@ public class ClusterDatum {
 
     public int getCount() {
         return count;
+    }
+
+    @JsonIgnore
+    private double dynamicvalue = 0d;
+
+    public double getDynamicvalue() {
+        return dynamicvalue;
+    }
+
+    public void setDynamicvalue(double dynamicvalue) {
+        this.dynamicvalue = dynamicvalue;
     }
 
     public ClusterDatum() {

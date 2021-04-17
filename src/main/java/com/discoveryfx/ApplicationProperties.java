@@ -21,9 +21,12 @@ public class ApplicationProperties {
     private static Map<Property, String> properties = new HashMap<>();
 
     public enum Property {
-        EMBEDDING_DIR,
+        APP_EMBEDDING_DIR,
+        INPUT_DATA_TXT,
+        INPUT_DATA_MODEL,
         CLUSTER_REPORT,
-        DATA_PACKAGE
+        DATA_PACKAGE,
+        VOCAB_FILE;
     }
 
 
@@ -44,9 +47,12 @@ public class ApplicationProperties {
                 logger.error("Couldn't find property file: " + propFileName, ex);
             }
 
-            properties.put(Property.EMBEDDING_DIR, prop.getProperty("embedding_dir"));
+            properties.put(Property.APP_EMBEDDING_DIR, prop.getProperty("app_embedding_dir"));
+            properties.put(Property.INPUT_DATA_TXT, prop.getProperty("input_data"));
+            properties.put(Property.INPUT_DATA_MODEL, prop.getProperty("input_data_model"));
             properties.put(Property.CLUSTER_REPORT, prop.getProperty("cluster_report"));
             properties.put(Property.DATA_PACKAGE, prop.getProperty("data_package_intents"));
+            properties.put(Property.VOCAB_FILE, prop.getProperty("vocab_file"));
 
 
         } catch (Exception e) {

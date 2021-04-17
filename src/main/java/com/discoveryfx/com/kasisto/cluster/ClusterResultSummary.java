@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.List;
 
 @JsonPropertyOrder({"total_requests", "total_request_text", "representative_sentence", "closest_intents"})
+public
 class ClusterResultSummary {
 
     @JsonProperty("total_request_text")

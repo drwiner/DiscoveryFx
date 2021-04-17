@@ -1,12 +1,14 @@
 package com.discoveryfx;
 
+import com.discoveryfx.com.kasisto.cluster.ClusterResult;
+
 public class ClusterTreeValue {
 
     private ClusterHeader header;
     private ClusterTable table;
     private CELLTYPE type;
 
-    public enum CELLTYPE {HEADER, TABLE}
+    public enum CELLTYPE {HEADER, TABLE, CLOSEST_INTENT_HEADER, CLOSEST_INTENT_CONTROL_PANEL}
 
     ;
 
@@ -15,10 +17,12 @@ public class ClusterTreeValue {
         this.type = CELLTYPE.HEADER;
     }
 
-    public ClusterTreeValue(Cluster cluster) {
+    public ClusterTreeValue(ClusterResult cluster) {
         table = new ClusterTable(cluster);
         this.type = CELLTYPE.TABLE;
     }
+
+//    public CLusterTreeValue(
 
     public CELLTYPE getType() {
         return type;
