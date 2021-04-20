@@ -6,9 +6,12 @@ import com.discoveryfx.com.kasisto.cluster.ClusterServiceOutput;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClusterTreeReport extends TreeView<ClusterTreeValue> {
+
+    public List<InteractiveTableView> tables = new ArrayList<>();
 
     public ClusterTreeReport(ClusterServiceOutput clusterReport) {
         super();
@@ -32,10 +35,13 @@ public class ClusterTreeReport extends TreeView<ClusterTreeValue> {
 
             ClusterResultSummary summary = result.getSummary();
 
+            String clusterTableName = "C" + clusterNum++;
+
             // Create Header.
-            ClusterTreeValue clusterTreeValue = new ClusterTreeValue("C" + clusterNum++, summary.getClusterSize(), summary.getRepresentativeSentence());
+            ClusterTreeValue clusterTreeValue = new ClusterTreeValue(clusterTableName, summary.getClusterSize(), summary.getRepresentativeSentence());
             TreeItem<ClusterTreeValue> clusterHeaderItem = new TreeItem<>(clusterTreeValue);
             root.getChildren().add(clusterHeaderItem);
+
 
             /*
                 Table,
@@ -44,9 +50,10 @@ public class ClusterTreeReport extends TreeView<ClusterTreeValue> {
                     - each intent has some kind of control panel.
              */
 
-            ClusterTreeValue clusterTableValue = new ClusterTreeValue(result);
+            ClusterTreeValue clusterTableValue = new ClusterTreeValue(clusterTableName, result);
             TreeItem<ClusterTreeValue> clusterTableItem = new TreeItem<>(clusterTableValue);
             clusterHeaderItem.getChildren().add(clusterTableItem);
+            tables.add(clusterTableValue.getTable());
 
 //            if (result.getSummary().getClosestIntents() != null){
 //                for (ClusterClosestIntent intent: result.getSummary().getClosestIntents()){
@@ -59,4 +66,5 @@ public class ClusterTreeReport extends TreeView<ClusterTreeValue> {
 
         return root;
     }
+
 }

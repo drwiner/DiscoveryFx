@@ -3,6 +3,7 @@ package com.discoveryfx;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,12 @@ import java.util.Map;
 public class IntentDataTree extends TreeView<IntentTreeValue> {
 
     private Map<String, TreeItem<IntentTreeValue>> intentItemMap;
+
+    public List<InteractiveTableView> tables = new ArrayList<>();
+
+    public List<InteractiveTableView> getTables() {
+        return tables;
+    }
 
     public IntentDataTree(List<IntentDataDocument> intentData) {
         super();
@@ -48,6 +55,7 @@ public class IntentDataTree extends TreeView<IntentTreeValue> {
             IntentTreeValue intentTreeValue = new IntentTreeValue(result);
             TreeItem<IntentTreeValue> intentTableItem = new TreeItem<>(intentTreeValue);
             intentHeaderItem.getChildren().add(intentTableItem);
+            tables.add(intentTreeValue.getTable());
 
 
 //

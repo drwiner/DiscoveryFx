@@ -1,6 +1,7 @@
 package com.discoveryfx.com.kasisto.cluster;
 
 import com.fasterxml.jackson.annotation.*;
+import javafx.beans.property.SimpleDoubleProperty;
 
 
 import java.util.Comparator;
@@ -11,7 +12,7 @@ import static com.discoveryfx.com.kasisto.cluster.Cluster.DF;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({"text", "confidence"})
-public class ClusterDatum {
+public class ClusterDatum{
 
     @JsonProperty("confidence")
     private String confidence;
@@ -29,6 +30,17 @@ public class ClusterDatum {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    @JsonIgnore
+    private String dest;
+
+    public String getDest() {
+        return dest;
+    }
+
+    public void setDest(String dest) {
+        this.dest = dest;
     }
 
     @JsonIgnore
@@ -59,14 +71,14 @@ public class ClusterDatum {
     }
 
     @JsonIgnore
-    private double dynamicvalue = 0d;
+    public SimpleDoubleProperty magicValueProperty = new SimpleDoubleProperty(0d);
 
-    public double getDynamicvalue() {
-        return dynamicvalue;
+    public double getMagicValue() {
+        return magicValueProperty.get();
     }
 
-    public void setDynamicvalue(double dynamicvalue) {
-        this.dynamicvalue = dynamicvalue;
+    public void setMagicValue(double magicValue) {
+        this.magicValueProperty.setValue(magicValue);
     }
 
     public ClusterDatum() {
@@ -117,6 +129,13 @@ public class ClusterDatum {
         @Override // Reversed on purpose
         public int compare(ClusterDatum d1, ClusterDatum d2){
             return Float.compare(d2.getSim(), d1.getSim());
+        }
+    }
+
+    public static class MagicComparator implements Comparator<ClusterDatum> {
+        @Override // Reversed on purpose
+        public int compare(ClusterDatum d1, ClusterDatum d2){
+            return Double.compare(d2.getMagicValue(), d1.getMagicValue());
         }
     }
 
