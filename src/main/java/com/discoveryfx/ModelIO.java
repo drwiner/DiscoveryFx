@@ -317,6 +317,7 @@ public class ModelIO {
                 return 0;
 
             return numerator / denom;
+
         }
 
         private static float dotProduct(double[] we1, double[] we2) {
@@ -353,6 +354,10 @@ public class ModelIO {
         return numerator / denom;
     }
 
+    public static double cosineDist(float[] we1, float[] we2) {
+        return 1 - cosineSim(we1, we2);
+    }
+
     private static float dotProduct(float[] we1, float[] we2) {
         float result = 0;
         for (int i=0; i < we1.length; i++){
@@ -375,8 +380,9 @@ public class ModelIO {
         Map<Integer, float[]> intentCentroids;
         List<float[]> packageEmbeddings;
         List<String> packageUtterances;
+        Map<String, Integer> packageUtteranceToIndex;
+        Map<Integer, Integer> packageIndexToLabel;
 
-        List<Set<Integer>> packagePartition;
         Map<String, Integer> labelToInt;
         Map<Integer, String> intToLabel;
 
@@ -396,10 +402,6 @@ public class ModelIO {
             return packageUtterances;
         }
 
-        public List<Set<Integer>> getPackagePartition() {
-            return packagePartition;
-        }
-
         public Map<String, Integer> getLabelToInt() {
             return labelToInt;
         }
@@ -408,21 +410,29 @@ public class ModelIO {
             return intToLabel;
         }
 
+        public Map<String, Integer> getPackageUtteranceToIndex() {
+            return packageUtteranceToIndex;
+        }
+
+        public Map<Integer, Integer> getPackageIndexToLabel() {
+            return packageIndexToLabel;
+        }
+
         public DataPackageModel(){
 
             String baseProperty = ApplicationProperties.getProperty(ApplicationProperties.Property.APP_EMBEDDING_DIR);
 
-            String packageModel = baseProperty + "package.model";
-            String packageIndex = baseProperty + "indices.model";
-            String packageUtt = baseProperty + "package_utterances.model";
-            String packageRep = baseProperty + "representatives.model";
-            String targetModel = baseProperty + "targets.model";
+            String packageModel = baseProperty + "package.model_ft.model";
+            String packageIndex = baseProperty + "indices.model_ft.model";
+            String packageUtt = baseProperty + "package_utterances.model_ft.model";
+            String packageRep = baseProperty + "representatives.model_ft.model";
+            String targetModel = baseProperty + "targets.model_ft.model";
 
             loadFullPackageModelFromBinary(packageModel, packageIndex, packageUtt, packageRep, targetModel);
 
 
-            String centerModel = baseProperty + "centers.model";
-            String centerIndex = baseProperty + "center_indices.model";
+            String centerModel = baseProperty + "centers.model_ft.model";
+            String centerIndex = baseProperty + "center_indices.model_ft.model";
 
             loadCentroidsFromBinary(centerModel, centerIndex);
 
@@ -431,25 +441,36 @@ public class ModelIO {
         private boolean loadFullPackageModelFromBinary(String packageModel, String packageIndex, String packageUtterance, String packageRep, String targetModel) {
             LOG.info("Loading full package model from binary");
 
-            packageEmbeddings = loadFromBinary(packageModel);
             List<Integer> indices = loadIndicesFromBinary(packageIndex);
-            packageUtterances = loadTargetsFromBinary(packageUtterance);
-            packagePartition = indices.stream().distinct().map(i -> new HashSet<Integer>()).collect(Collectors.toList());
-
             List<String> reps = loadTargetsFromBinary(packageRep);
-
             intentDisplaySentences = new HashMap<>();
             if (intToLabel == null || labelToInt == null){
                 intToLabel = new HashMap<>();
                 labelToInt = new HashMap<>();
                 List<String> targets = loadTargetsFromBinary(targetModel);
 
-                IntStream.range(0, targets.size()).forEach(i -> {
-                    intToLabel.put(i, targets.get(i));
-                    labelToInt.put(targets.get(i), i);
-                    intentDisplaySentences.put(targets.get(i), reps.get(i));
-                });
+                if (targets != null)
+                    IntStream.range(0, targets.size()).forEach(i -> {
+                        intToLabel.put(i, targets.get(i));
+                        labelToInt.put(targets.get(i), i);
+                        if (reps != null)
+                            intentDisplaySentences.put(targets.get(i), reps.get(i));
+                    });
             }
+
+            packageEmbeddings = loadFromBinary(packageModel);
+            packageUtterances = loadTargetsFromBinary(packageUtterance);
+//            packagePartition = indices.stream().distinct().map(i -> new HashSet<Integer>()).collect(Collectors.toList());
+
+            packageUtteranceToIndex = new HashMap<>();
+            packageIndexToLabel = new HashMap<>();
+            if (indices != null)
+                for (int i=0; i< indices.size(); i++){
+                    if (packageUtterances != null)
+                        packageUtteranceToIndex.put(packageUtterances.get(i), i);
+
+                    packageIndexToLabel.put(i, indices.get(i));
+                }
 
             return true;
         }

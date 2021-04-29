@@ -2,7 +2,6 @@ package com.discoveryfx;
 
 import com.discoveryfx.com.kasisto.cluster.ClusterDatum;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,9 +11,7 @@ import javafx.scene.input.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.discoveryfx.DatumInteractionManager.SERIALIZED_MIME_TYPE;
 
@@ -170,10 +167,14 @@ public class InteractiveTableView extends TableView<ClusterDatum> {
 
     private void createAndSetRowFactory(){
         setRowFactory(tv -> {
+
             DatumRow row = new DatumRow(tableName, tableType);
 
             addEventHandler(MouseEvent.DRAG_DETECTED, e -> {
                 if (row.isEmpty())
+                    return;
+
+                if (row.getScene() == null)
                     return;
 
                 Integer index = row.getIndex();

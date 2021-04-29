@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.discoveryfx.Client.getClusterTreeReport;
 import static com.discoveryfx.com.kasisto.cluster.Cluster.DF;
 
 public class AudienceSelectionTable extends InteractiveTableView {
@@ -67,13 +68,15 @@ public class AudienceSelectionTable extends InteractiveTableView {
         });
 
         allTrueBinding = new AllTrueBinding(FXCollections.observableArrayList(
-                Client.getClusterTreeReport().tables.stream().map(t -> t.updatedValuesProperty)
-                        .collect(Collectors.toList())));
+                Stream.concat(getClusterTreeReport().tables.stream(), Client.getIntentDataTree().tables.stream())
+                .map(t -> t.updatedValuesProperty).collect(Collectors.toList())));
+
 
         allTrueBinding.addListener((observableValue, aBoolean, t1) -> {
             if (t1 != null && t1) {
                 refilterData();
-                Client.getClusterTreeReport().tables.forEach(t -> t.updatedValuesProperty.setValue(false));
+                Stream.concat(getClusterTreeReport().tables.stream(), Client.getIntentDataTree().tables.stream())
+                        .forEach(t -> t.updatedValuesProperty.setValue(false));
             }
         });
 
@@ -103,7 +106,7 @@ public class AudienceSelectionTable extends InteractiveTableView {
 //            setItems(FXCollections.emptyObservableList());
 //        setItems(FXCollections.emptyObservableList());
             data = Stream.concat(
-                    Client.getClusterTreeReport().tables.stream().flatMap(t -> t.getItems().stream()),
+                    getClusterTreeReport().tables.stream().flatMap(t -> t.getItems().stream()),
                     Client.getIntentDataTree().tables.stream().flatMap(t -> t.getItems().stream()))
                     .filter(datum -> datum.getMagicValue() >= minMagicConf.get())
                     .sorted(new ClusterDatum.MagicComparator())

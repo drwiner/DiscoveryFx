@@ -21,6 +21,21 @@ public class ClusterDatum{
         return confidence;
     }
 
+    public void setConfidence(String confidence) {
+        this.confidence = confidence;
+    }
+
+    @JsonIgnore
+    private String intentDataId;
+
+    public String getIntentDataId() {
+        return intentDataId;
+    }
+
+    public void setIntentDataId(String intentDataId) {
+        this.intentDataId = intentDataId;
+    }
+
     @JsonIgnore
     private String source;
 
@@ -41,6 +56,17 @@ public class ClusterDatum{
 
     public void setDest(String dest) {
         this.dest = dest;
+    }
+
+    @JsonIgnore
+    private String silhouette;
+
+    public String getSilhouette() {
+        return silhouette;
+    }
+
+    public void setSilhouette(String silhouette) {
+        this.silhouette = silhouette;
     }
 
     @JsonIgnore
@@ -68,6 +94,10 @@ public class ClusterDatum{
 
     public int getCount() {
         return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     @JsonIgnore

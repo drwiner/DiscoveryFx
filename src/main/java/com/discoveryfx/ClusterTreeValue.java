@@ -97,54 +97,20 @@ public class ClusterTreeValue {
         dynamicColumn.setMinWidth(50);
         dynamicColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(DataTableHelper.round(param.getValue().getMagicValue(), 4)));
 
-//        dynamicColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(0d));
-
-//        Client.getMagicSelectionTable().avgUpdated.addListener((observableValue1, number, t11) -> {
-//            if (t11 != null && t11)
-//                dynamicColumn.setCellValueFactory(param -> {
-//                    if (Client.getMagicSelectionTable() == null)
-//                        return new ReadOnlyObjectWrapper<>(0d);
-//
-//                    float[] currentAvg = Client.getMagicSelectionTable().getCurrentAvg();
-//                    float[] ourVector = Client.getProcUttToEmb().getOrDefault(param.getValue().getDatum(), new float[768]);
-//
-//                    if (currentAvg == null || ourVector == null){
-////                LOG.info(param.getValue().getDatum());
-//                        param.getValue().setMagicValue(0d);
-//                        return new ReadOnlyObjectWrapper<>(0d);
-//                    }
-//
-//                    double v = ModelIO.cosineSim(currentAvg, ourVector);
-//                    param.getValue().setMagicValue(v);
-//                    return new ReadOnlyObjectWrapper<>(DataTableHelper.round(v, 4));
-//                });
-//        });
-//
         List<TableColumn<ClusterDatum, ?>> arrayList = new ArrayList<>();
         arrayList.add(sentenceColumn);
         arrayList.add(countColumn);
         arrayList.add(confidenceColumn);
+
+        TableColumn<ClusterDatum, String> silhoutte = new TableColumn<>("Silhouette");
+        silhoutte.setMinWidth(50);
+        silhoutte.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().getSilhouette()));
+
+        arrayList.add(silhoutte);
         arrayList.add(dynamicColumn); // expected to be last.
+
 
         return arrayList;
 
     }
-
-//    private ReadOnlyObjectWrapper<Double> setCellFactoryAverages(TableColumn.CellDataFeatures<ClusterDatum, Double> param){
-//        if (Client.getMagicSelectionTable() == null)
-//            return new ReadOnlyObjectWrapper<>(0d);
-//
-//        float[] currentAvg = Client.getMagicSelectionTable().getCurrentAvg();
-//        float[] ourVector = Client.getProcUttToEmb().getOrDefault(param.getValue().getDatum(), new float[768]);
-//
-//        if (currentAvg == null || ourVector == null){
-////                LOG.info(param.getValue().getDatum());
-//            param.getValue().setMagicValue(0d);
-//            return new ReadOnlyObjectWrapper<>(0d);
-//        }
-//
-//        double v = ModelIO.cosineSim(currentAvg, ourVector);
-//        param.getValue().setMagicValue(v);
-//        return new ReadOnlyObjectWrapper<>(DataTableHelper.round(v, 4));
-//    }
 }

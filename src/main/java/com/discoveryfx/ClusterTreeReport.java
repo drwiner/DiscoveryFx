@@ -3,6 +3,7 @@ package com.discoveryfx;
 import com.discoveryfx.com.kasisto.cluster.ClusterResult;
 import com.discoveryfx.com.kasisto.cluster.ClusterResultSummary;
 import com.discoveryfx.com.kasisto.cluster.ClusterServiceOutput;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
@@ -13,6 +14,7 @@ public class ClusterTreeReport extends TreeView<ClusterTreeValue> {
 
     public List<InteractiveTableView> tables = new ArrayList<>();
 
+
     public ClusterTreeReport(ClusterServiceOutput clusterReport) {
         super();
 
@@ -22,7 +24,20 @@ public class ClusterTreeReport extends TreeView<ClusterTreeValue> {
         setShowRoot(false);
 
         setCellFactory(c -> new ClusterTreeCell());
+        getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    }
 
+    public TreeItem<ClusterTreeValue> getTableAtIndex(int index){
+//        return null;
+        if (getRoot().getChildren().size() <= index)
+            return null;
+        return getRoot().getChildren().get(index).getChildren().get(0);
+    }
+
+    public void removeTable(TreeItem<ClusterTreeValue> item){
+        tables.remove(item.getValue().getTable());
+        TreeItem<ClusterTreeValue> parent = item.getParent();
+        getRoot().getChildren().remove(parent);
     }
 
     private TreeItem<ClusterTreeValue> buildRoot(List<ClusterResult> results){
@@ -41,6 +56,7 @@ public class ClusterTreeReport extends TreeView<ClusterTreeValue> {
             ClusterTreeValue clusterTreeValue = new ClusterTreeValue(clusterTableName, summary.getClusterSize(), summary.getRepresentativeSentence());
             TreeItem<ClusterTreeValue> clusterHeaderItem = new TreeItem<>(clusterTreeValue);
             root.getChildren().add(clusterHeaderItem);
+            clusterHeaderItem.setExpanded(false);
 
 
             /*

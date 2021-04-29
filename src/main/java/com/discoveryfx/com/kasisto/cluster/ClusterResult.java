@@ -23,6 +23,10 @@ public class ClusterResult {
         summary = new ClusterResultSummary();
     }
 
+    public ClusterResult(List<ClusterDatum> data){
+        datums = data;
+    }
+
 
     public List<ClusterDatum> getDatums() {
         return datums;

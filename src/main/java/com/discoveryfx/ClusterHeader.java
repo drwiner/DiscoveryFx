@@ -13,11 +13,11 @@ public class ClusterHeader extends GridPane {
     private Integer size;
     private String repSentence;
 
-    private Button closeButton = new Button("Remove");
+//    private Button closeButton = new Button("Remove");
 
-    public Button getCloseButton() {
-        return closeButton;
-    }
+//    public Button getCloseButton() {
+//        return closeButton;
+//    }
 
     public ClusterHeader(String name, Integer size, String repSentence) {
         super();
@@ -59,17 +59,17 @@ public class ClusterHeader extends GridPane {
         Region region2 = new Region();
         region2.setMinWidth(5);
         region2.setMaxWidth(5);
-        Region region3 =new Region();
-        region3.setMinWidth(5);
-        region3.setMaxWidth(5);
+//        Region region3 =new Region();
+//        region3.setMinWidth(5);
+//        region3.setMaxWidth(5);
         add(region1, 1, 0, 1, 1);
         add(region2, 3, 0, 1, 1);
-        add(region3, 8, 0, 1, 1);
+//        add(region3, 8, 0, 1, 1);
 
-        GridPane.setHalignment(closeButton, HPos.RIGHT);
-        GridPane.setValignment(closeButton, VPos.TOP);
+//        GridPane.setHalignment(closeButton, HPos.RIGHT);
+//        GridPane.setValignment(closeButton, VPos.TOP);
 
-        add(closeButton, 9, 0, 1, 1);
+//        add(closeButton, 9, 0, 1, 1);
     }
 
     public String getName() {

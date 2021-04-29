@@ -1,25 +1,31 @@
 package com.discoveryfx;
 
 import com.discoveryfx.com.kasisto.cluster.ClusterDatum;
+import com.discoveryfx.com.kasisto.cluster.ClusterEval;
 import com.discoveryfx.com.kasisto.cluster.ClusterServiceOutput;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.discoveryfx.DatumInteractionManager.TableViewEnum.*;
+import static com.discoveryfx.InteractiveControlPanel.createClusterDataPanel;
 
 public class Client extends Application{
+
+    private static final Logger LOG= LoggerFactory.getLogger(Client.class);
 
     private static final int LEFT_WIDTH = 800;
     private static final int RIGHT_WIDTH = 800;
@@ -126,6 +132,7 @@ public class Client extends Application{
         clusterTreeReport.minHeightProperty().bind(leftSideReport.heightProperty());
         leftSideReport.getChildren().add(clusterTreeReport);
 
+
         intentDataTree = new IntentDataTree(getIntentDataDocuments());
         intentDataTree.minWidthProperty().bind(rightSideData.widthProperty());
         intentDataTree.minHeightProperty().bind(rightSideData.heightProperty());
@@ -134,7 +141,9 @@ public class Client extends Application{
         HBox.setHgrow(leftSideReport, Priority.ALWAYS);
         VBox.setVgrow(leftSideReport, Priority.ALWAYS);
 
-        leftBox.getChildren().addAll(leftSideHeader, leftSideReport);
+        InteractiveControlPanel clusterDataPanel = createClusterDataPanel(clusterTreeReport);
+
+        leftBox.getChildren().addAll(leftSideHeader, leftSideReport, clusterDataPanel);
         leftBox.setPrefWidth(LEFT_WIDTH);
         rightBox.getChildren().addAll(rightSideHeader, rightSideData);
         rightBox.setPrefWidth(RIGHT_WIDTH);
@@ -202,6 +211,9 @@ public class Client extends Application{
         for (int i=0; i< inputData.size(); i++){
             procUttToEmb.put(inputData.get(i), inputModel.get(i));
         }
+
+        if (clusterReport != null && clusterReport.getClusters() != null)
+            LOG.info("Silhouette: " + ClusterEval.getSilhouetteCoefficient(clusterReport.getClusters()));
 
         intentDataDocuments = IntentDataDocument.getAllIntents();
         dataPackageModel = new ModelIO.DataPackageModel();
