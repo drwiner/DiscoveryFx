@@ -93,6 +93,39 @@ public class ClusterEval {
         return si;
     }
 
+    public static double getSilhouetteCoefficient(ClusterDatum item, List<ClusterDatum> result, List<List<ClusterDatum>> others){
+        int sizeCi = result.size();
+        if (sizeCi <=1){
+            return 0;
+        }
+
+        Map<String, float[]> procUttToEmb = Client.getProcUttToEmb();
+
+        if (! procUttToEmb.containsKey(item.getDatum()))
+            return -10;
+        float[] itemVector = procUttToEmb.getOrDefault(item.getDatum(), new float[768]);
+        double ai = result.stream()
+                .filter(j -> j!= item && procUttToEmb.containsKey(j.getDatum()))
+                .map(j -> ModelIO.cosineDist(itemVector, procUttToEmb.getOrDefault(j.getDatum(), new float[768])))
+                .reduce(0d, Double::sum) / (sizeCi - 1);
+
+        if (others.size() <= 1)
+            return 1;
+
+        double bi = others.stream().filter(o -> o != result).map(o -> o.stream()
+                .filter(j -> procUttToEmb.containsKey(j.getDatum()))
+                .map(j -> ModelIO.cosineDist(itemVector, procUttToEmb.getOrDefault(j.getDatum(), new float[768])))
+                .reduce(0d, Double::sum) / (o.size()))
+                .mapToDouble(d -> d).min().orElse(0d);
+
+        if (ai == bi)
+            return 0;
+
+        double si = (bi - ai) / (Math.max(bi, ai));
+
+        return si;
+    }
+
     public static double getSilhouetteCoefficient(ClusterDatum item, ClusterResult result, List<ClusterResult> others){
         //https://en.wikipedia.org/wiki/Silhouette_(clustering)
         int sizeCi = result.getDatums().size();

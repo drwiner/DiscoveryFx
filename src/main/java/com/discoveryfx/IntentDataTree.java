@@ -1,5 +1,6 @@
 package com.discoveryfx;
 
+import com.discoveryfx.com.kasisto.cluster.ClusterEval;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 
@@ -7,6 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.discoveryfx.com.kasisto.cluster.Cluster.DF;
 
 public class IntentDataTree extends TreeView<IntentTreeValue> {
 
@@ -85,6 +89,15 @@ public class IntentDataTree extends TreeView<IntentTreeValue> {
 
         }
 
+        // Create silhouettes
+        tables.forEach(table -> {
+            table.getData().forEach(datum -> {
+                double si = ClusterEval.getSilhouetteCoefficient(datum, table.getData(), tables.stream().map(InteractiveTableView::getData).collect(Collectors.toList()));
+                datum.setSilhouette(DF.format(si));
+            });
+            table.getColumns().get(table.getColumns().size()-1).setVisible(false);
+            table.getColumns().get(table.getColumns().size()-1).setVisible(true);
+        });
 
         return root;
     }

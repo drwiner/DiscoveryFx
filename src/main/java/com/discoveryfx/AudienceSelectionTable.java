@@ -7,6 +7,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public class AudienceSelectionTable extends InteractiveTableView {
 //        });
 
         minMagicConf.addListener((observableValue, number, t1) -> {
-            refilterData();
+            refilterData(typeFilter);
         });
 
         allTrueBinding = new AllTrueBinding(FXCollections.observableArrayList(
@@ -74,9 +75,15 @@ public class AudienceSelectionTable extends InteractiveTableView {
 
         allTrueBinding.addListener((observableValue, aBoolean, t1) -> {
             if (t1 != null && t1) {
-                refilterData();
+                refilterData(Client.getTableViewEnumChoiceBox().getValue());
                 Stream.concat(getClusterTreeReport().tables.stream(), Client.getIntentDataTree().tables.stream())
                         .forEach(t -> t.updatedValuesProperty.setValue(false));
+            }
+        });
+
+        Client.getTableViewEnumChoiceBox().getSelectionModel().selectedItemProperty().addListener((observableValue, tableViewEnum, t1) -> {
+            if (t1 != tableViewEnum  && t1 != null){
+                refilterData(t1);
             }
         });
 
@@ -96,7 +103,7 @@ public class AudienceSelectionTable extends InteractiveTableView {
     }
 
 
-    public void refilterData(){
+    public void refilterData(DatumInteractionManager.TableViewEnum whichData){
         LOG.info("Refiltering Data in Audience");
 
 
@@ -105,12 +112,25 @@ public class AudienceSelectionTable extends InteractiveTableView {
 //            getItems().removeAll(data);
 //            setItems(FXCollections.emptyObservableList());
 //        setItems(FXCollections.emptyObservableList());
-            data = Stream.concat(
-                    getClusterTreeReport().tables.stream().flatMap(t -> t.getItems().stream()),
-                    Client.getIntentDataTree().tables.stream().flatMap(t -> t.getItems().stream()))
-                    .filter(datum -> datum.getMagicValue() >= minMagicConf.get())
-                    .sorted(new ClusterDatum.MagicComparator())
-                    .collect(Collectors.toList());
+
+            if (whichData.equals(DatumInteractionManager.TableViewEnum.ALL)) {
+                data = Stream.concat(
+                        getClusterTreeReport().tables.stream().flatMap(t -> t.getItems().stream()),
+                        Client.getIntentDataTree().tables.stream().flatMap(t -> t.getItems().stream()))
+                        .filter(datum -> datum.getMagicValue() >= minMagicConf.get())
+                        .sorted(new ClusterDatum.MagicComparator())
+                        .collect(Collectors.toList());
+            } else if (whichData.equals(DatumInteractionManager.TableViewEnum.CLUSTER)){
+                data = getClusterTreeReport().tables.stream().flatMap(t -> t.getItems().stream())
+                        .filter(datum -> datum.getMagicValue() >= minMagicConf.get())
+                        .sorted(new ClusterDatum.MagicComparator())
+                        .collect(Collectors.toList());
+            } else if (whichData.equals(DatumInteractionManager.TableViewEnum.INTENT)) {
+                data = Client.getIntentDataTree().tables.stream().flatMap(t -> t.getItems().stream())
+                        .filter(datum -> datum.getMagicValue() >= minMagicConf.get())
+                        .sorted(new ClusterDatum.MagicComparator())
+                        .collect(Collectors.toList());
+            }
 
 
             setItems(FXCollections.observableArrayList(data));

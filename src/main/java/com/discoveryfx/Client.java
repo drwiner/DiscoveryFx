@@ -41,6 +41,11 @@ public class Client extends Application{
     private BooleanBinding noMagicSelected;
     private static ClusterTreeReport clusterTreeReport;
     private static IntentDataTree intentDataTree;
+    private static ChoiceBox<DatumInteractionManager.TableViewEnum> tableViewEnumChoiceBox;
+
+    public static ChoiceBox<DatumInteractionManager.TableViewEnum> getTableViewEnumChoiceBox() {
+        return tableViewEnumChoiceBox;
+    }
 
     public static ClusterTreeReport getClusterTreeReport() {
         return clusterTreeReport;
@@ -160,10 +165,10 @@ public class Client extends Application{
 
 
         // ToDO: track when data leaves the cluster report / intent data so it doesn't appear here. or just set opacity or something.
-        audienceSelectionTable = new AudienceSelectionTable();
-
-        ChoiceBox<DatumInteractionManager.TableViewEnum> tableViewEnumChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(ALL, CLUSTER, INTENT));
+        tableViewEnumChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(ALL, CLUSTER, INTENT));
         tableViewEnumChoiceBox.setValue(ALL);
+
+        audienceSelectionTable = new AudienceSelectionTable();
 
         TextField simField = new TextField("0.8");
         simField.textProperty().addListener((observableValue, s, t1) -> {
@@ -195,6 +200,7 @@ public class Client extends Application{
     @Override
     public void start(Stage stage) {
 
+        stage.setTitle("The FED");
         String clusterReportFile = ApplicationProperties.getProperty(ApplicationProperties.Property.CLUSTER_REPORT);
         clusterReport = ClusterReportIO.readClusterReportFile(clusterReportFile);
 

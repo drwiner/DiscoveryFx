@@ -1,14 +1,7 @@
 package com.discoveryfx;
 
 import com.discoveryfx.com.kasisto.cluster.ClusterDatum;
-import javafx.geometry.Insets;
 import javafx.scene.control.TableRow;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
-
-import static com.discoveryfx.DataTableHelper.expInterpolateColor;
 
 public class DatumRow extends TableRow<ClusterDatum> {
 

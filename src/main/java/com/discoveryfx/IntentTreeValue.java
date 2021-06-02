@@ -64,7 +64,6 @@ public class IntentTreeValue {
 
         data.stream().filter(datum -> visitedUtterances.get(datum.getDatum()) > 1).forEach(datum -> {
             datum.setCount(visitedUtterances.get(datum.getDatum()));
-            datum.setSilhouette(DF.format(ClusterEval.getSilhouetteCoefficient(datum, intentDataDocument, Client.getIntentDataDocuments())));
         });
 
         table = new InteractiveTableView(intentDataDocument.getIntentName(), DatumInteractionManager.TableViewEnum.INTENT,
@@ -115,11 +114,16 @@ public class IntentTreeValue {
         dynamicColumn.setMinWidth(50);
         dynamicColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(DataTableHelper.round(param.getValue().getMagicValue(), 4)));
 
+        TableColumn<ClusterDatum, String> silhoutte = new TableColumn<>("Silhouette");
+        silhoutte.setMinWidth(50);
+        silhoutte.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().getSilhouette()));
+
         List<TableColumn<ClusterDatum, ?>> columns = new ArrayList<>();
         columns.add(sentenceColumn);
         columns.add(countColumn);
         columns.add(confidenceColumn);
         columns.add(dynamicColumn);
+        columns.add(silhoutte);
 
         return columns;
     }
