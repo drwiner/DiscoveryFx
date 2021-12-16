@@ -32,7 +32,7 @@ public class Client extends Application{
 
     private static final int LEFT_WIDTH = 800;
     private static final int RIGHT_WIDTH = 800;
-    private static final int HEIGHT = 800;
+    private static final int HEIGHT = 1000;
 
     private static ClusterServiceOutput clusterReport;
     private static Map<String, float[]> procUttToEmb;
@@ -115,7 +115,10 @@ public class Client extends Application{
                     magicSelectionTable.remove(selected);
             }
         });
-        HBox magicFields = new HBox(clear, remove);
+        TextField search = new TextField();
+        search.setPromptText("Search");
+        search.setFocusTraversable(true);
+        HBox magicFields = new HBox(clear, remove, search);
         magicSelector.setGraphic(magicFields);
 
         VBox leftBox = new VBox();
@@ -151,9 +154,10 @@ public class Client extends Application{
         intentDataTree.minWidthProperty().bind(rightSideData.widthProperty());
         intentDataTree.minHeightProperty().bind(rightSideData.heightProperty());
         rightSideData.getChildren().add(intentDataTree);
+        rightBox.minHeightProperty().bind(clusterTreeReport.heightProperty());
 
         HBox.setHgrow(leftSideReport, Priority.ALWAYS);
-        VBox.setVgrow(leftSideReport, Priority.ALWAYS);
+        VBox.setVgrow(rightSideData, Priority.ALWAYS);
 
 //        clusterTreeReport.getSelectionModel()
 //        TableReportInterface<ClusterTreeValue> clusterTreeReport = Client.clusterTreeReport;
@@ -165,7 +169,7 @@ public class Client extends Application{
         leftBox.setPrefWidth(LEFT_WIDTH);
         rightBox.getChildren().addAll(rightSideHeader, rightSideData, intentDataPanel);
         rightBox.setPrefWidth(RIGHT_WIDTH);
-        rightBox.minHeightProperty().bind(leftBox.heightProperty());
+
 
         HBox hBox = new HBox(leftBox, rightBox);
         root.setCenter(hBox);
@@ -200,7 +204,8 @@ public class Client extends Application{
 //        root.setTop(magicSelector);
 
         magicSelector.setPrefWidth(LEFT_WIDTH);
-        bottom.getChildren().add(magicSelector);
+
+        bottom.getChildren().addAll(magicSelector);
 
 
         // ToDO: track when data leaves the cluster report / intent data so it doesn't appear here. or just set opacity or something.
@@ -221,7 +226,11 @@ public class Client extends Application{
             }
         });
 
-        HBox audienceFilters = new HBox(tableViewEnumChoiceBox, simField);
+        TextField search2= new TextField();
+        search2.setPromptText("Search");
+        search2.setFocusTraversable(true);
+
+        HBox audienceFilters = new HBox(tableViewEnumChoiceBox, simField, search2);
 
         TitledPane magicAudience = new TitledPane("Magic Audience", audienceSelectionTable);
         magicAudience.setGraphic(audienceFilters);
