@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 import static com.discoveryfx.com.kasisto.cluster.Cluster.DF;
 
-public class IntentDataTree extends TreeView<IntentTreeValue> {
+public class IntentDataTree extends TreeView<IntentTreeValue> implements TableReportInterface<IntentTreeValue>{
 
     private Map<String, TreeItem<IntentTreeValue>> intentItemMap;
 
@@ -21,6 +21,21 @@ public class IntentDataTree extends TreeView<IntentTreeValue> {
     public List<InteractiveTableView> getTables() {
         return tables;
     }
+
+    @Override
+    public TreeItem<IntentTreeValue> getTableAtIndex(int index) {
+        if (getRoot().getChildren().size() <= index)
+            return null;
+        return getRoot().getChildren().get(index).getChildren().get(0);
+    }
+
+    @Override
+    public void removeTable(TreeItem<IntentTreeValue> item) {
+        tables.remove(item.getValue().getTable());
+        TreeItem<IntentTreeValue> parent = item.getParent();
+        getRoot().getChildren().remove(parent);
+    }
+
 
     public IntentDataTree(List<IntentDataDocument> intentData) {
         super();

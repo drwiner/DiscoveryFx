@@ -118,6 +118,26 @@ public class IntentData implements Comparable<IntentData> {
     @JsonIgnore
     private int version;
 
+    private String notes;
+
+    private String categorization;
+
+    public String getCategorization() {
+        return categorization;
+    }
+
+    public void setCategorization(String categorization) {
+        this.categorization = categorization;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
     @JsonIgnore
     public int getVersion() { return version; }
     @JsonIgnore

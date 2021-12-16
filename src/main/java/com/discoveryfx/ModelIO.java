@@ -421,18 +421,20 @@ public class ModelIO {
         public DataPackageModel(){
 
             String baseProperty = ApplicationProperties.getProperty(ApplicationProperties.Property.APP_EMBEDDING_DIR);
+//            String addFt = "_ft";
+//            String addFt = "";
 
-            String packageModel = baseProperty + "package.model_ft.model";
-            String packageIndex = baseProperty + "indices.model_ft.model";
-            String packageUtt = baseProperty + "package_utterances.model_ft.model";
-            String packageRep = baseProperty + "representatives.model_ft.model";
-            String targetModel = baseProperty + "targets.model_ft.model";
+            String packageModel = baseProperty + "package.model";
+            String packageIndex = baseProperty + "indices.model";
+            String packageUtt = baseProperty + "package_utterances.model";
+            String packageRep = baseProperty + "representatives.model";
+            String targetModel = baseProperty + "targets.model";
 
             loadFullPackageModelFromBinary(packageModel, packageIndex, packageUtt, packageRep, targetModel);
 
 
-            String centerModel = baseProperty + "centers.model_ft.model";
-            String centerIndex = baseProperty + "center_indices.model_ft.model";
+            String centerModel = baseProperty + "centers.model";
+            String centerIndex = baseProperty + "center_indices.model";
 
             loadCentroidsFromBinary(centerModel, centerIndex);
 

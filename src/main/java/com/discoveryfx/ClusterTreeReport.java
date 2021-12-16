@@ -10,7 +10,7 @@ import javafx.scene.control.TreeView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClusterTreeReport extends TreeView<ClusterTreeValue> {
+public class ClusterTreeReport  extends TreeView<ClusterTreeValue> implements TableReportInterface<ClusterTreeValue>{
 
     public List<InteractiveTableView> tables = new ArrayList<>();
 
@@ -27,6 +27,13 @@ public class ClusterTreeReport extends TreeView<ClusterTreeValue> {
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
+
+    @Override
+    public List<InteractiveTableView> getTables() {
+        return tables;
+    }
+
+    @Override
     public TreeItem<ClusterTreeValue> getTableAtIndex(int index){
 //        return null;
         if (getRoot().getChildren().size() <= index)
@@ -34,6 +41,8 @@ public class ClusterTreeReport extends TreeView<ClusterTreeValue> {
         return getRoot().getChildren().get(index).getChildren().get(0);
     }
 
+
+    @Override
     public void removeTable(TreeItem<ClusterTreeValue> item){
         tables.remove(item.getValue().getTable());
         TreeItem<ClusterTreeValue> parent = item.getParent();

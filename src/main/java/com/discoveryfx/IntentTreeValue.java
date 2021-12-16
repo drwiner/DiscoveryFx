@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static com.discoveryfx.com.kasisto.cluster.Cluster.DF;
 
-public class IntentTreeValue {
+public class IntentTreeValue implements TabelTreeValueInterface{
 
     private IntentHeader header;
     private InteractiveTableView table;
@@ -43,9 +43,13 @@ public class IntentTreeValue {
                     } else
                         visitedUtterances.put(datum.getTriggerSentenceText(), 1);
 
+                    if (! packageUtteranceToIndex.containsKey(datum.getTriggerSentenceText())){
+                        System.out.println(datum.getTriggerSentenceText());
+                        return null;
+                    }
                     int index = packageUtteranceToIndex.get(datum.getTriggerSentenceText());
                     double sim = 0d;
-                    float[] vector = new float[768];
+                    float[] vector;
                     if (index >=0) {
                         vector = dataPackageModel.getPackageEmbeddings().get(index);
                         if (!procUttToEmb.containsKey(datum.getTriggerSentenceText())){

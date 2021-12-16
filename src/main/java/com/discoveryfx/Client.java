@@ -7,10 +7,13 @@ import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +80,12 @@ public class Client extends Application{
 
     public static AudienceSelectionTable getAudienceSelectionTable() {
         return audienceSelectionTable;
+    }
+
+    private static Region createRegion(){
+        Region reg = new Region();
+        HBox.setHgrow(reg, Priority.ALWAYS);
+        return reg;
     }
 
     private Parent createRoot() {
@@ -146,17 +155,47 @@ public class Client extends Application{
         HBox.setHgrow(leftSideReport, Priority.ALWAYS);
         VBox.setVgrow(leftSideReport, Priority.ALWAYS);
 
-        InteractiveControlPanel clusterDataPanel = createClusterDataPanel(clusterTreeReport);
+//        clusterTreeReport.getSelectionModel()
+//        TableReportInterface<ClusterTreeValue> clusterTreeReport = Client.clusterTreeReport;
+
+        InteractiveControlPanel clusterDataPanel = createClusterDataPanel(Client.clusterTreeReport);
+        InteractiveControlPanel intentDataPanel = createClusterDataPanel(intentDataTree);
 
         leftBox.getChildren().addAll(leftSideHeader, leftSideReport, clusterDataPanel);
         leftBox.setPrefWidth(LEFT_WIDTH);
-        rightBox.getChildren().addAll(rightSideHeader, rightSideData);
+        rightBox.getChildren().addAll(rightSideHeader, rightSideData, intentDataPanel);
         rightBox.setPrefWidth(RIGHT_WIDTH);
+        rightBox.minHeightProperty().bind(leftBox.heightProperty());
 
         HBox hBox = new HBox(leftBox, rightBox);
         root.setCenter(hBox);
 
         HBox bottom = new HBox();
+
+        Label label = new Label("Input / New Data");
+        label.setFont(Font.font(20));
+        label.setTextAlignment(TextAlignment.CENTER);
+        HBox.setHgrow(label, Priority.NEVER);
+//        HBox.
+
+        HBox leftTop = new HBox(createRegion(), label, createRegion());
+        leftTop.setAlignment(Pos.BASELINE_CENTER);
+        leftTop.setPrefWidth(LEFT_WIDTH);
+
+        Label kai_package = new Label("KAI Package");
+        HBox.setHgrow(kai_package, Priority.NEVER);
+        kai_package.setFont(Font.font(20));
+        kai_package.setTextAlignment(TextAlignment.CENTER);
+
+        HBox topRight = new HBox(createRegion(), kai_package, createRegion());
+        topRight.setAlignment(Pos.BASELINE_CENTER);
+        topRight.setPrefWidth(RIGHT_WIDTH);
+
+        HBox hBox1 = new HBox(leftTop, topRight);
+        VBox vBox = new VBox(new KaiMenuBar(), hBox1);
+        root.setTop(vBox);
+
+//        HBox hBox = new HBox(label1, region1, label2, region2, label3);
 
 //        root.setTop(magicSelector);
 
@@ -191,7 +230,11 @@ public class Client extends Application{
 //        root.setBottom(magicAudience);
         magicAudience.setPrefWidth(RIGHT_WIDTH);
         bottom.getChildren().add(magicAudience);
-        root.setBottom(bottom);
+        Label drag_and_drop_search = new Label("Drag and Drop Search");
+        drag_and_drop_search.setFont(Font.font(20));
+        HBox hBox2 = new HBox(createRegion(), drag_and_drop_search, createRegion());
+
+        root.setBottom(new VBox(hBox2, bottom));
 
         return root;
     }
@@ -200,7 +243,7 @@ public class Client extends Application{
     @Override
     public void start(Stage stage) {
 
-        stage.setTitle("The FED");
+        stage.setTitle("Kasisto Autotation Prototype");
         String clusterReportFile = ApplicationProperties.getProperty(ApplicationProperties.Property.CLUSTER_REPORT);
         clusterReport = ClusterReportIO.readClusterReportFile(clusterReportFile);
 

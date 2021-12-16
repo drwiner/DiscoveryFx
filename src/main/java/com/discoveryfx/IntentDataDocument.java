@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -35,6 +36,26 @@ public class IntentDataDocument {
 
     @JsonProperty("state")
     private String state;
+
+    private String notes;
+
+    private Map categorization;
+
+    public Map getCategorization() {
+        return categorization;
+    }
+
+    public void setCategorization(Map categorization) {
+        this.categorization = categorization;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
 
     public String getState() {
         return state;
@@ -95,9 +116,14 @@ public class IntentDataDocument {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public static IntentDataDocument createDocument(File file){
+        if (file.toString().endsWith(".DS_Store"))
+            return null;
+
+
         try {
             return MAPPER.readValue(file, IntentDataDocument.class);
         } catch (Exception e) {
+            System.out.println(file.toString());
             e.printStackTrace();
             return null;
         }

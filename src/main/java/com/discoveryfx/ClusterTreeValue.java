@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClusterTreeValue {
+public class ClusterTreeValue implements TabelTreeValueInterface{
 
     private ClusterHeader header;
     private InteractiveTableView table;

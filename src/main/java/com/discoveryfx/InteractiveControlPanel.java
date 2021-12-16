@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.VPos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Control;
+import javafx.scene.control.TreeView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class InteractiveControlPanel extends GridPane {
         return controlItems;
     }
 
-    public static InteractiveControlPanel createClusterDataPanel(ClusterTreeReport reportTree){
+    public static InteractiveControlPanel createClusterDataPanel(TableReportInterface reportTree){
         Button split = new Button("Split");
         Button merge = new Button("Merge");
         Button remove = new Button("Remove");
@@ -45,6 +46,7 @@ public class InteractiveControlPanel extends GridPane {
         merge.setDisable(true);
         remove.setDisable(true);
         deselect.setDisable(true);
+
 
         IntegerBinding numHeadersSelected = Bindings.size(reportTree.getSelectionModel().getSelectedItems());
         merge.disableProperty().bind(numHeadersSelected.lessThan(2));

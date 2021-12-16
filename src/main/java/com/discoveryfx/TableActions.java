@@ -3,6 +3,7 @@ package com.discoveryfx;
 import com.discoveryfx.com.kasisto.cluster.ClusterDatum;
 import com.discoveryfx.com.kasisto.cluster.ClusterResult;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class TableActions {
     private TableActions(){
     }
 
-    public static void merge(List<Integer> tableIndices, ClusterTreeReport treeReport){
+    public static void merge(List<Integer> tableIndices, TableReportInterface<TabelTreeValueInterface> treeReport){
         /*
          * Put all the content in the i>0'th table into the 0th table
          */
@@ -23,7 +24,7 @@ public class TableActions {
         float[] sum = new float[768];
 
         Map<String, float[]> procUttToEmb = Client.getProcUttToEmb();
-        TreeItem<ClusterTreeValue> originalTable = treeReport.getTableAtIndex(tableIndices.get(0));
+        TreeItem<TabelTreeValueInterface> originalTable = treeReport.getTableAtIndex(tableIndices.get(0));
 
         int actualVectorsCount = 0;
         for (ClusterDatum datum: originalTable.getValue().getTable().getData()){
@@ -44,7 +45,7 @@ public class TableActions {
 
         List<ClusterDatum> newMembers = new ArrayList<>();
         for (int i=1; i< tableIndices.size(); i++){
-            TreeItem<ClusterTreeValue> tableAtIndex = treeReport.getTableAtIndex(tableIndices.get(i));
+            TreeItem<TabelTreeValueInterface> tableAtIndex = treeReport.getTableAtIndex(tableIndices.get(i));
             for (ClusterDatum datum: tableAtIndex.getValue().getTable().getData()){
                 newMembers.add(datum);
                 if (! procUttToEmb.containsKey(datum.getDatum()))
@@ -73,7 +74,7 @@ public class TableActions {
 
         remove(tableIndices.subList(1, tableIndices.size()), treeReport);
 
-        treeReport.tables.stream().map(t -> new ClusterResult(t.getData()));
+        treeReport.getTables().stream().map(t -> new ClusterResult(t.getData()));
 
     }
 
@@ -81,10 +82,10 @@ public class TableActions {
 
     }
 
-    public static void remove(List<Integer> tableIndices, ClusterTreeReport treeReport){
-        List<TreeItem<ClusterTreeValue>> items = new ArrayList<>();
+    public static void remove(List<Integer> tableIndices, TableReportInterface treeReport){
+        List<TreeItem<TabelTreeValueInterface>> items = new ArrayList<>();
         for (Integer i: tableIndices){
-            TreeItem<ClusterTreeValue> treeItem = treeReport.getTableAtIndex(i);
+            TreeItem<TabelTreeValueInterface> treeItem = treeReport.getTableAtIndex(i);
             if (treeItem != null){
                 items.add(treeItem);
             }
